@@ -1,0 +1,19 @@
+ManifestFileVersion: 0
+CRC: 173619323
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 3606b4f3a0c124cc5bbd41410fe51cd5
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 27295f96fcdc2b917bd061e8817c7e02
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Res/Scene2/Other/666.prefab
+Dependencies: []

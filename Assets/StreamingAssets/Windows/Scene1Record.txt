@@ -1,0 +1,3 @@
+2
+Fight scene1/fight.assetbundle
+Scene1 scene1.assetbundle
