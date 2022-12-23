@@ -52,7 +52,7 @@ public class GameInit : MonoBehaviour
     /// </summary>
     private IEnumerator DownLoadResTest()
     {
-        string url = "E:/LuaServer";
+        string url = "D:/LuaServer";
 
         string fileUrl = url + "/files.txt";
 

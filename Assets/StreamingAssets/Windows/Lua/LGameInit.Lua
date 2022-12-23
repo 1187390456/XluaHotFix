@@ -5,16 +5,16 @@ LGameInit = {}
 local this = LGameInit
 
 function LGameInit:GetInstance()
-   return this
+  return this
 end
 
 LGameInit.lp = function(name, process)
-   print(name, process)
-   if process >= 1 then
-      CS.GameInit.Instance:TestFunc1()
-   end
+  print(name, process)
+  if process >= 1 then
+    CS.GameInit.Instance:TestFunc1()
+  end
 end
 
 function LGameInit:Init()
-   CS.AssetBundleManager.Instance:LoadAssetBundle("main", "UI", this.lp)
+  CS.AssetBundleManager.Instance:LoadAssetBundle("main", "UI", this.lp)
 end
