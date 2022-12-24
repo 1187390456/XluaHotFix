@@ -1,4 +1,4 @@
-Lua/LGameInit.Lua|b5c146c32e6347a3f489ae6006e30608
+Lua/LGameInit.Lua|d92883ae83db173b341550f8e29c551f
 main/ui.assetbundle|21b80a151e0cc1e89f7252925f856b49
 main/ui.assetbundle.manifest|2d402b44fc7b34690d5547f11714bced
 MainRecord.txt|23e70ad3a80eb4bf5acb598afa36693e

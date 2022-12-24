@@ -70,6 +70,10 @@ public class GameInit : MonoBehaviour
             string[] kv = lines[i].Split('|'); // 分割
             string fileName = kv[0];
             string localFile = (downLoadPath + "/" + fileName).Trim();
+
+            Debug.Log(url + "/" + fileName);
+
+
             if (!File.Exists(localFile)) // 本地不存在这个文件 进行下载
             {
                 string dir = Path.GetDirectoryName(localFile);
@@ -77,6 +81,7 @@ public class GameInit : MonoBehaviour
 
                 // 开始网络下载
                 string tmpUrl = url + "/" + fileName;
+
                 string tmpText = File.ReadAllText(tmpUrl);
                 File.WriteAllText(localFile, tmpText);
             }
@@ -110,7 +115,7 @@ public class GameInit : MonoBehaviour
     /// </summary>
     private IEnumerator DownLoadRes()
     {
-        string url = "http://127.0.0.1";
+        string url = "https://luaserver.xuchenming.cn/";
 
         string fileUrl = url + "files.txt";
 
@@ -139,6 +144,7 @@ public class GameInit : MonoBehaviour
             string[] kv = lines[i].Split('|'); // 分割
             string fileName = kv[0];
             string localFile = (downLoadPath + "/" + fileName).Trim();
+
             if (!File.Exists(localFile)) // 本地不存在这个文件 进行下载
             {
                 string dir = Path.GetDirectoryName(localFile);
@@ -146,17 +152,16 @@ public class GameInit : MonoBehaviour
 
                 // 开始网络下载
                 string tmpUrl = url + fileName;
-
-                www = new WWW(fileUrl);
+                www = new WWW(tmpUrl);
                 yield return www;
                 if (www.error != null) Debug.LogError(www.error);
-
                 File.WriteAllBytes(localFile, www.bytes);
             }
             else // 有文件 比对md5 效验是否有更新
             {
                 string md5 = kv[1];
                 string localMd5 = GetFileMd5(localFile);
+
                 if (md5 == localMd5)
                 {
                     // 无更新
@@ -167,10 +172,8 @@ public class GameInit : MonoBehaviour
                     File.Delete(localFile);
 
                     // 下载新文件
-                    string dir = Path.GetDirectoryName(localFile);
-                    Directory.CreateDirectory(dir);
                     string tmpUrl = url + fileName;
-                    www = new WWW(fileUrl);
+                    www = new WWW(tmpUrl);
                     yield return www;
                     if (www.error != null) Debug.LogError(www.error);
                     File.WriteAllBytes(localFile, www.bytes);
