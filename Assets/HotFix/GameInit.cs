@@ -5,6 +5,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
 public class GameInit : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class GameInit : MonoBehaviour
         downLoadPath = PathUtil.GetAssetBundleOutPath();
 
         // 检测资源进行比对更新
-        StartCoroutine(DownLoadResTest());
+        StartCoroutine(DownLoadRes());
 
         // 开始游戏主逻辑
         gameObject.AddComponent<AssetBundleManager>();
@@ -73,7 +74,6 @@ public class GameInit : MonoBehaviour
 
             Debug.Log(url + "/" + fileName);
 
-
             if (!File.Exists(localFile)) // 本地不存在这个文件 进行下载
             {
                 string dir = Path.GetDirectoryName(localFile);
@@ -115,27 +115,18 @@ public class GameInit : MonoBehaviour
     /// </summary>
     private IEnumerator DownLoadRes()
     {
-        string url = "https://luaserver.xuchenming.cn/";
-
+        // 获取远程Md5文件
+        string url = "https://xuchenming-0gg48xrbe11e5c2d-1309555563.tcloudbaseapp.com/Windows/";
         string fileUrl = url + "files.txt";
-
-        WWW www = new WWW(fileUrl);
-
-        yield return www;
-
-        // 网络检测
-        if (www.error != null) Debug.LogError(www.error);
-
+        UnityWebRequest www = UnityWebRequest.Get(fileUrl);
+        yield return www.SendWebRequest();
+        if (www.result != UnityWebRequest.Result.Success) Debug.Log(www.error);
         // 判断本地是否有这个文件 并拷贝
-
         if (!Directory.Exists(downLoadPath)) Directory.CreateDirectory(downLoadPath);
-
         // 下载写入本地
-        File.WriteAllBytes(downLoadPath + "/files.txt", www.bytes);
-
+        File.WriteAllBytes(downLoadPath + "/files.txt", www.downloadHandler.data);
         // 读取文件内容
-
-        string filesText = www.text;
+        string filesText = www.downloadHandler.text;
         string[] lines = filesText.Split('\n');
 
         for (int i = 0; i < lines.Length; i++)
@@ -149,40 +140,34 @@ public class GameInit : MonoBehaviour
             {
                 string dir = Path.GetDirectoryName(localFile);
                 Directory.CreateDirectory(dir);
-
-                // 开始网络下载
-                string tmpUrl = url + fileName;
-                www = new WWW(tmpUrl);
-                yield return www;
-                if (www.error != null) Debug.LogError(www.error);
-                File.WriteAllBytes(localFile, www.bytes);
+                StartCoroutine(DownFileAndSave(url + fileName, localFile)); // 开始网络下载
             }
             else // 有文件 比对md5 效验是否有更新
             {
-                string md5 = kv[1];
-                string localMd5 = GetFileMd5(localFile);
+                string md5 = kv[1].Trim();
+                string localMd5 = GetFileMd5(localFile).Trim();
 
-                if (md5 == localMd5)
+                if (md5 != localMd5)   // 更新了 删除本地文件 下载新的
                 {
-                    // 无更新
-                }
-                else
-                {
-                    // 更新了 删除本地文件
                     File.Delete(localFile);
-
-                    // 下载新文件
-                    string tmpUrl = url + fileName;
-                    www = new WWW(tmpUrl);
-                    yield return www;
-                    if (www.error != null) Debug.LogError(www.error);
-                    File.WriteAllBytes(localFile, www.bytes);
+                    StartCoroutine(DownFileAndSave(url + fileName, localFile)); // 开始网络下载
                 }
             }
         }
         yield return new WaitForEndOfFrame();
 
         Debug.Log("更新完成");
+    }
+
+    /// <summary>
+    /// 下载文件并保存在本地
+    /// </summary>
+    private IEnumerator DownFileAndSave(string url, string savePath)
+    {
+        UnityWebRequest www = UnityWebRequest.Get(url);
+        yield return www.SendWebRequest();
+        if (www.result == UnityWebRequest.Result.ConnectionError) Debug.Log(www.error);
+        File.WriteAllBytes(savePath, www.downloadHandler.data);
     }
 
     /// <summary>

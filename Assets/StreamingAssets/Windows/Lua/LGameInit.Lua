@@ -1,20 +1,20 @@
 LGameInit = {}
 
--- é™æ€æ–¹æ³•ç”¨. å…¶ä»–æ–¹æ³•ç”¨:
--- CSä¸­çš„å¼•ç”¨ç±»åž‹éœ€è¦åœ¨LuaManageræ·»åŠ å‘½åç©ºé—´
+-- ¾²Ì¬·½·¨ÓÃ. ÆäËû·½·¨ÓÃ:
+-- CSÖÐµÄÒýÓÃÀàÐÍÐèÒªÔÚLuaManagerÌí¼ÓÃüÃû¿Õ¼ä
 local this = LGameInit
 
 function LGameInit:GetInstance()
-  return this
+    return this
 end
 
 LGameInit.lp = function(name, process)
-  print(name, process)
-  if process >= 1 then
-    CS.GameInit.Instance:TestFunc1()
-  end
+    print(name, process)
+    if process >= 1 then
+        CS.GameInit.Instance:TestFunc()
+    end
 end
 
 function LGameInit:Init()
-  CS.AssetBundleManager.Instance:LoadAssetBundle("main", "UI", this.lp)
+    CS.AssetBundleManager.Instance:LoadAssetBundle("main", "UI", this.lp)
 end
