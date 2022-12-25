@@ -18,14 +18,19 @@ public class GameInit : MonoBehaviour
         Instance = this;
         downLoadPath = PathUtil.GetAssetBundleOutPath();
 
-        // 检测资源进行比对更新
-        StartCoroutine(DownLoadRes());
-
-        // 开始游戏主逻辑
         gameObject.AddComponent<AssetBundleManager>();
         gameObject.AddComponent<LuaManager>();
 
-        // lua文件编码必须会UTF-8 没有Bom
+        StartCoroutine(InitGame());
+    }
+    //  游戏初始化
+    private IEnumerator InitGame()
+    {
+        // 下载资源进行对比
+        yield return StartCoroutine(DownLoadRes());
+
+        yield return new WaitUntil(() => File.Exists(downLoadPath + "/Lua/LGameInit.Lua"));
+        // 游戏开始逻辑
         LuaManager.Instance.DoString("require 'LGameInit'");
         LuaManager.Instance.CallLuaFunction("LGameInit", "Init");
     }
@@ -154,7 +159,7 @@ public class GameInit : MonoBehaviour
                 }
             }
         }
-        yield return new WaitForEndOfFrame();
+        yield return null;
 
         Debug.Log("更新完成");
     }
@@ -168,6 +173,7 @@ public class GameInit : MonoBehaviour
         yield return www.SendWebRequest();
         if (www.result == UnityWebRequest.Result.ConnectionError) Debug.Log(www.error);
         File.WriteAllBytes(savePath, www.downloadHandler.data);
+        yield return new WaitUntil(() => File.Exists(savePath));
     }
 
     /// <summary>

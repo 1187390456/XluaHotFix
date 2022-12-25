@@ -48,6 +48,8 @@ public class LuaManager : MonoBehaviour
         // 获取lua所在的目录
         string luaPath = PathUtil.GetAssetBundleOutPath() + "/Lua";
 
+        if (!Directory.Exists(luaPath)) Directory.CreateDirectory(luaPath);
+
         if (dict.ContainsKey(fileName)) return dict[fileName];
 
         return ProcessDir(new DirectoryInfo(luaPath), fileName);
