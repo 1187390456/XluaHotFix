@@ -15,6 +15,8 @@ public class GameInit : MonoBehaviour
 
     private string downLoadPath;
 
+    private bool updateDone = false; // 更新完成
+
     private void Awake()
     {
         Instance = this;
@@ -29,8 +31,9 @@ public class GameInit : MonoBehaviour
     //  游戏初始化
     private IEnumerator InitGame()
     {
-        // 下载资源进行对比
-        yield return StartCoroutine(DownLoadRes());
+        StartCoroutine(DownLoadRes());    // 下载资源进行对比
+
+        yield return new WaitUntil(() => updateDone);
 
         yield return new WaitUntil(() => File.Exists(downLoadPath + "/Lua/LGameInit.Lua"));
         // 游戏开始逻辑
@@ -148,11 +151,14 @@ public class GameInit : MonoBehaviour
             string fileName = kv[0];
             string localFile = (downLoadPath + "/" + fileName).Trim();
 
+            bool isDownDone = false; // 是否下载完成
+            if (i == lines.Length - 2) isDownDone = true;
+
             if (!File.Exists(localFile)) // 本地不存在这个文件 进行下载
             {
                 string dir = Path.GetDirectoryName(localFile);
                 Directory.CreateDirectory(dir);
-                StartCoroutine(DownFileAndSave(url + fileName, localFile)); // 开始网络下载
+                StartCoroutine(DownFileAndSave(url + fileName, localFile, isDownDone)); // 开始网络下载
             }
             else // 有文件 比对md5 效验是否有更新
             {
@@ -162,25 +168,31 @@ public class GameInit : MonoBehaviour
                 if (md5 != localMd5)   // 更新了 删除本地文件 下载新的
                 {
                     File.Delete(localFile);
-                    StartCoroutine(DownFileAndSave(url + fileName, localFile)); // 开始网络下载
+                    StartCoroutine(DownFileAndSave(url + fileName, localFile, isDownDone)); // 开始网络下载
+                }
+                else if (isDownDone)
+                {
+                    updateDone = true;
+                    Debug.Log("更新完成");
                 }
             }
         }
-        yield return null;
-
-        Debug.Log("更新完成");
     }
 
     /// <summary>
     /// 下载文件并保存在本地
     /// </summary>
-    private IEnumerator DownFileAndSave(string url, string savePath)
+    private IEnumerator DownFileAndSave(string url, string savePath, bool isDone)
     {
         UnityWebRequest www = UnityWebRequest.Get(url);
         yield return www.SendWebRequest();
         if (www.result == UnityWebRequest.Result.ConnectionError) Debug.Log(www.error);
         File.WriteAllBytes(savePath, www.downloadHandler.data);
         yield return new WaitUntil(() => File.Exists(savePath));
+        Debug.Log("文件" + savePath + "下载完成!");
+        yield return new WaitUntil(() => isDone);
+        updateDone = true;
+        Debug.Log("更新完成");
     }
 
     /// <summary>
