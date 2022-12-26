@@ -11,7 +11,7 @@ end
 LGameInit.lp = function(name, process)
     print(name, process)
     if process >= 1 then
-        CS.GameInit.Instance:TestFunc()
+        CS.GameInit.Instance:TestFunc1()
     end
 end
 

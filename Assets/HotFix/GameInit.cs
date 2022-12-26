@@ -6,7 +6,9 @@ using System.Security.Cryptography;
 using System.Text;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using XLua;
 
+[LuaCallCSharp]
 public class GameInit : MonoBehaviour
 {
     public static GameInit Instance;
@@ -23,6 +25,7 @@ public class GameInit : MonoBehaviour
 
         StartCoroutine(InitGame());
     }
+
     //  游戏初始化
     private IEnumerator InitGame()
     {
@@ -37,20 +40,24 @@ public class GameInit : MonoBehaviour
 
     public void TestFunc()
     {
-        var prefabs = AssetBundleManager.Instance.LoadAsset("main", "UI", "Update") as GameObject;
-        var canvas = GameObject.Find("Canvas");
-
-        var target = Instantiate(prefabs, canvas.transform);
-        target.transform.Find("Content").GetComponent<Text>().text = "666111";
+        StartCoroutine(AssetBundleManager.Instance.StarLoadAsset("main", "UI", "Update", (value) =>
+        {
+            var prefabs = value as GameObject;
+            var canvas = GameObject.Find("Canvas");
+            var target = Instantiate(prefabs, canvas.transform);
+            target.transform.Find("Content").GetComponent<Text>().text = "还没更新呢";
+        }));
     }
 
     public void TestFunc1()
     {
-        var prefabs = AssetBundleManager.Instance.LoadAsset("main", "UI", "Update") as GameObject;
-        var canvas = GameObject.Find("Canvas");
-
-        var target = Instantiate(prefabs, canvas.transform);
-        target.transform.Find("Content").GetComponent<Text>().text = "更新完成";
+        StartCoroutine(AssetBundleManager.Instance.StarLoadAsset("main", "UI", "Update", (value) =>
+        {
+            var prefabs = value as GameObject;
+            var canvas = GameObject.Find("Canvas");
+            var target = Instantiate(prefabs, canvas.transform);
+            target.transform.Find("Content").GetComponent<Text>().text = "更新完成";
+        }));
     }
 
     /// <summary>

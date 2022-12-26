@@ -7,6 +7,7 @@ using XLua;
 /// <summary>
 /// AssetBundle管理类
 /// </summary>
+[LuaCallCSharp]
 public class AssetBundleManager : MonoBehaviour
 {
     private static AssetBundleManager instance;
@@ -153,10 +154,14 @@ public class AssetBundleManager : MonoBehaviour
     #region 下层提供的方法
 
     /// <summary>
-    /// 获取单个资源
+    /// 获取单个资源 通过委托返回
     /// </summary>
-    /// <param name="assetName">资源名字</param>
-    /// <returns>Obj类型的资源</returns>
+    public IEnumerator StarLoadAsset(string sceneName, string folderName, string assetName, System.Action<Object> callback)
+    {
+        yield return new WaitUntil(() => IsFinsh(sceneName, folderName)); // 等待加载完成
+        callback(LoadAsset(sceneName, folderName, assetName));
+    }
+
     public Object LoadAsset(string sceneName, string folderName, string assetName)
     {
         if (nameSceneDict.ContainsKey(sceneName))

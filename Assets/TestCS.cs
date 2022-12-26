@@ -11,7 +11,7 @@ public class TestCS : MonoBehaviour
 
         if (progress >= 1f && bundleName == "scene1/buildings.assetbundle")
         {
-            Instantiate(AssetBundleManager.Instance.LoadAsset("Scene1", "Buildings", "Building1"));
+            //  Instantiate(AssetBundleManager.Instance.LoadAsset("Scene1", "Buildings", "Building1"));
         }
     }
 

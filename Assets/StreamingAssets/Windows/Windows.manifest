@@ -1,22 +1,22 @@
 ManifestFileVersion: 0
-CRC: 3636100262
+CRC: 1940800471
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
-      Name: scene1.assetbundle
-      Dependencies: {}
-    Info_1:
-      Name: scene2/other.assetbundle
-      Dependencies: {}
-    Info_2:
       Name: scene3.assetbundle
       Dependencies: {}
-    Info_3:
+    Info_1:
+      Name: scene1.assetbundle
+      Dependencies: {}
+    Info_2:
       Name: scene2.assetbundle
       Dependencies: {}
-    Info_4:
+    Info_3:
       Name: scene1/fight.assetbundle
       Dependencies: {}
-    Info_5:
+    Info_4:
       Name: main/ui.assetbundle
+      Dependencies: {}
+    Info_5:
+      Name: scene2/other.assetbundle
       Dependencies: {}
