@@ -1,3 +1,0 @@
-2
-Scene1 scene1.assetbundle
-Fight scene1/fight.assetbundle

@@ -1,3 +1,0 @@
-2
-Other scene2/other.assetbundle
-Scene2 scene2.assetbundle
