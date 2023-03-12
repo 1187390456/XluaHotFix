@@ -4,178 +4,181 @@ using UnityEngine;
 using UnityEngine.UI;
 using XLua;
 
-/// <summary>
-/// 加载 AssetBundle
-/// </summary>
-public class AssetBundleLoader
+namespace AssetBundleTool
 {
     /// <summary>
-    /// 包里的资源
+    /// 加载 AssetBundle
     /// </summary>
-    private AssetLoader assetLoader;
-
-    /// <summary>
-    /// WWW对象
-    /// </summary>
-    private WWW www;
-
-    /// <summary>
-    /// 包名
-    /// </summary>
-    private string bundleName;
-
-    /// <summary>
-    /// 包的路径
-    /// </summary>
-    private string bundlePath;
-
-    /// <summary>
-    /// 进度
-    /// </summary>
-    private float progress;
-
-    /// <summary>
-    /// 加载进度回调
-    /// </summary>
-    private LuaFunction lp;
-
-    /// <summary>
-    /// 加载完成回调
-    /// </summary>
-    private LoadComplete lc;
-
-    /// <summary>
-    /// 构造函数
-    /// </summary>
-    public AssetBundleLoader(LoadComplete lc, LuaFunction lp, string bundleName)
+    public class AssetBundleLoader
     {
-        this.lc = lc;
-        this.lp = lp;
-        this.bundleName = bundleName;
-        this.progress = 0f;
-        //TODO
-        this.bundlePath = PathUtil.GetWWWPath() + "/" + bundleName;
-        this.www = null;
-        this.assetLoader = null;
-    }
+        /// <summary>
+        /// 包里的资源
+        /// </summary>
+        private AssetLoader assetLoader;
 
-    /// <summary>
-    /// 加载资源包
-    /// </summary>
-    /// <returns></returns>
-    public IEnumerator Load()
-    {
-        www = new WWW(bundlePath);
+        /// <summary>
+        /// WWW对象
+        /// </summary>
+        private WWW www;
 
-        /*  AssetBundleCreateRequest abcr = AssetBundle.LoadFromFileAsync(bundlePath);
-          yield return abcr;*/
+        /// <summary>
+        /// 包名
+        /// </summary>
+        private string bundleName;
 
-        while (!www.isDone)
+        /// <summary>
+        /// 包的路径
+        /// </summary>
+        private string bundlePath;
+
+        /// <summary>
+        /// 进度
+        /// </summary>
+        private float progress;
+
+        /// <summary>
+        /// 加载进度回调
+        /// </summary>
+        private LuaFunction lp;
+
+        /// <summary>
+        /// 加载完成回调
+        /// </summary>
+        private LoadComplete lc;
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        public AssetBundleLoader(LoadComplete lc, LuaFunction lp, string bundleName)
         {
-            this.progress = www.progress;
-
-            //每一帧来调用一次 更新加载进度
-            if (lp != null)
-                lp.Call(bundleName, progress);
-
-            yield return www;
+            this.lc = lc;
+            this.lp = lp;
+            this.bundleName = bundleName;
+            this.progress = 0f;
+            //TODO
+            this.bundlePath = PathUtil.GetWWWPath() + "/" + bundleName;
+            this.www = null;
+            this.assetLoader = null;
         }
 
-        progress = www.progress;
-
-        if (progress >= 1f)
+        /// <summary>
+        /// 加载资源包
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator Load()
         {
-            //加载完成了
-            assetLoader = new AssetLoader();
-            assetLoader.AssetBundle = www.assetBundle;
+            www = new WWW(bundlePath);
 
-            //每一帧来调用一次 更新加载进度
-            if (lp != null)
-                lp.Call(bundleName, progress);
+            /*  AssetBundleCreateRequest abcr = AssetBundle.LoadFromFileAsync(bundlePath);
+              yield return abcr;*/
 
-            if (lc != null)
-                lc(bundleName);
-        }
-    }
+            while (!www.isDone)
+            {
+                this.progress = www.progress;
 
-    /// <summary>
-    /// 获取单个资源
-    /// </summary>
-    /// <param name="assetName">资源名字</param>
-    /// <returns>Obj类型的资源</returns>
-    public Object LoadAsset(string assetName)
-    {
-        if (assetLoader == null)
-        {
-            Debug.LogError("当前assetLoader为空，无法获取该 " + assetName + " 资源");
-            return null;
-        }
+                //每一帧来调用一次 更新加载进度
+                if (lp != null)
+                    lp.Call(bundleName, progress);
 
-        return assetLoader.LoadAsset(assetName);
-    }
+                yield return www;
+            }
 
-    /// <summary>
-    /// 获取包里所有资源
-    /// </summary>
-    /// <returns></returns>
-    public Object[] LoadAllAssets()
-    {
-        if (assetLoader == null)
-        {
-            Debug.LogError("当前assetLoader为空，无法获取资源");
-            return null;
-        }
-        else
-            return assetLoader.LoadAllAssets();
-    }
+            progress = www.progress;
 
-    /// <summary>
-    /// 获取带有子物体的资源
-    /// </summary>
-    /// <param name="assetName">资源名称</param>
-    /// <returns>所有资源</returns>
-    public Object[] LoadAssetWithSubAssets(string assetName)
-    {
-        if (assetLoader == null)
-        {
-            Debug.LogError("当前assetLoader为空，无法获取该 " + assetName + " 资源");
-            return null;
+            if (progress >= 1f)
+            {
+                //加载完成了
+                assetLoader = new AssetLoader();
+                assetLoader.AssetBundle = www.assetBundle;
+
+                //每一帧来调用一次 更新加载进度
+                if (lp != null)
+                    lp.Call(bundleName, progress);
+
+                if (lc != null)
+                    lc(bundleName);
+            }
         }
 
-        return assetLoader.LoadAssetWithSubAssets(assetName);
-    }
-
-    /// <summary>
-    /// 卸载资源
-    /// </summary>
-    /// <param name="asset">资源</param>
-    public void UnLoadAsset(Object asset)
-    {
-        if (assetLoader == null)
+        /// <summary>
+        /// 获取单个资源
+        /// </summary>
+        /// <param name="assetName">资源名字</param>
+        /// <returns>Obj类型的资源</returns>
+        public Object LoadAsset(string assetName)
         {
-            Debug.LogError("当前assetLoader包为空");
+            if (assetLoader == null)
+            {
+                Debug.LogError("当前assetLoader为空，无法获取该 " + assetName + " 资源");
+                return null;
+            }
+
+            return assetLoader.LoadAsset(assetName);
         }
-        else
-            assetLoader.UnLoadAsset(asset);
-    }
 
-    /// <summary>
-    /// 释放资源包
-    /// </summary>
-    public void Dispose()
-    {
-        if (this.assetLoader == null)
-            return;
+        /// <summary>
+        /// 获取包里所有资源
+        /// </summary>
+        /// <returns></returns>
+        public Object[] LoadAllAssets()
+        {
+            if (assetLoader == null)
+            {
+                Debug.LogError("当前assetLoader为空，无法获取资源");
+                return null;
+            }
+            else
+                return assetLoader.LoadAllAssets();
+        }
 
-        assetLoader.Dispose();
-        assetLoader = null;
-    }
+        /// <summary>
+        /// 获取带有子物体的资源
+        /// </summary>
+        /// <param name="assetName">资源名称</param>
+        /// <returns>所有资源</returns>
+        public Object[] LoadAssetWithSubAssets(string assetName)
+        {
+            if (assetLoader == null)
+            {
+                Debug.LogError("当前assetLoader为空，无法获取该 " + assetName + " 资源");
+                return null;
+            }
 
-    /// <summary>
-    /// 调试专用
-    /// </summary>
-    public void GetAllAssetNames()
-    {
-        assetLoader.GetAllAssetNames();
+            return assetLoader.LoadAssetWithSubAssets(assetName);
+        }
+
+        /// <summary>
+        /// 卸载资源
+        /// </summary>
+        /// <param name="asset">资源</param>
+        public void UnLoadAsset(Object asset)
+        {
+            if (assetLoader == null)
+            {
+                Debug.LogError("当前assetLoader包为空");
+            }
+            else
+                assetLoader.UnLoadAsset(asset);
+        }
+
+        /// <summary>
+        /// 释放资源包
+        /// </summary>
+        public void Dispose()
+        {
+            if (this.assetLoader == null)
+                return;
+
+            assetLoader.Dispose();
+            assetLoader = null;
+        }
+
+        /// <summary>
+        /// 调试专用
+        /// </summary>
+        public void GetAllAssetNames()
+        {
+            assetLoader.GetAllAssetNames();
+        }
     }
 }

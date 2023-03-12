@@ -3,47 +3,50 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// 对Object的封装
-/// </summary>
-public class TempObject
+namespace AssetBundleTool
 {
     /// <summary>
-    /// 资源列表
+    /// 对Object的封装
     /// </summary>
-    private List<Object> assetList;
-
-    public TempObject(params Object[] assets)
+    public class TempObject
     {
-        this.assetList = new List<Object>(assets);
-    }
+        /// <summary>
+        /// 资源列表
+        /// </summary>
+        private List<Object> assetList;
 
-    /// <summary>
-    /// 资源
-    /// </summary>
-    public List<Object> Asset
-    {
-        get { return assetList; }
-    }
-
-    ///// <summary>
-    ///// 添加资源
-    ///// </summary>
-    ///// <param name="assets"></param>
-    //public void AddAsset(params Object[] assets)
-    //{
-    //}
-
-    /// <summary>
-    /// 卸载资源
-    /// </summary>
-    public void UnloadAsset()
-    {
-        for (int i = assetList.Count - 1; i >= 0; i--)
+        public TempObject(params Object[] assets)
         {
-            if (assetList[i] is GameObject) continue;
+            this.assetList = new List<Object>(assets);
+        }
 
-            Resources.UnloadAsset(assetList[i]);
+        /// <summary>
+        /// 资源
+        /// </summary>
+        public List<Object> Asset
+        {
+            get { return assetList; }
+        }
+
+        ///// <summary>
+        ///// 添加资源
+        ///// </summary>
+        ///// <param name="assets"></param>
+        //public void AddAsset(params Object[] assets)
+        //{
+        //}
+
+        /// <summary>
+        /// 卸载资源
+        /// </summary>
+        public void UnloadAsset()
+        {
+            for (int i = assetList.Count - 1; i >= 0; i--)
+            {
+                if (assetList[i] is GameObject) continue;
+
+                Resources.UnloadAsset(assetList[i]);
+            }
         }
     }
 }

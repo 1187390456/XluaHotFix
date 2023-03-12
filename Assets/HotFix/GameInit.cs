@@ -7,6 +7,7 @@ using System.Text;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using XLua;
+using AssetBundleTool;
 
 [LuaCallCSharp]
 public class GameInit : MonoBehaviour
@@ -131,7 +132,7 @@ public class GameInit : MonoBehaviour
     private IEnumerator DownLoadRes()
     {
         // 获取远程Md5文件
-        string url = "https://xuchenming-0gg48xrbe11e5c2d-1309555563.tcloudbaseapp.com/Windows/";
+        string url = "http://hotfix.itxcm.cn/Windows/";
         string fileUrl = url + "files.txt";
         UnityWebRequest www = UnityWebRequest.Get(fileUrl);
         yield return www.SendWebRequest();
